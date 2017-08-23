@@ -1,5 +1,6 @@
+
 Objective:
-———————————————————————————————————————
+---------------------------------------------------------------------
 The objective of the project is to performs SENTIMENT analysis of particular hash tags in tweeter data in real-time. 
 For example, we want to do the sentiment analysis for all the tweets for #trump, #obama and show them 
 (e.g., positive, neutral, negative, etc. tweets) on a map. When we show tweets on a map, we plot them using their latitude and longitude. 
@@ -23,7 +24,7 @@ A visualization index is created in Elasticsearch. A map is created using Kibana
 Dashboard requires data to be time stamped. In the dashboard set a Map refresh time to 2 min as an example.
 
 Steps to execute the program:
-——————————————————————————————————————————
+---------------------------------------------------------------------
 
 1. Command to run the zookeeper
 	zookeeper-server-start.sh /usr/local/etc/kafka/zookeeper.properties
@@ -38,8 +39,9 @@ Steps to execute the program:
 6. Run the pySparkSentiment Analyser
 	spark-submit --jars ~/Downloads/spark-streaming-kafka-assembly_2.10-1.6.3.jar,/usr/local/spark/jars/elasticsearch-hadoop-5.3.0.jar ConsumerPySpark.py
 
-####################################################
 Dependency resolution:
+---------------------------------------------------------------------
+
 1. To send the data to elasticsearch from the pyspark download below jar file from https://mvnrepository.com/
 	elasticsearch-hadoop-5.3.0.jar
 	Group: org.elasticsearch
