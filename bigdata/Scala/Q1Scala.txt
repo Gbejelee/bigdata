@@ -1,0 +1,29 @@
+import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
+import org.apache.spark.mllib.linalg.Vectors
+
+val data = sc.textFile("Homework3/itemusermat")
+val parsedData = data.map(line => Vectors.dense(line.split(' ').drop(1).map(_.toDouble))).cache()
+
+//val clusters = KMeans.train(parsedData, numberOfClusters, numberOfIterations)
+val clusters = KMeans.train(parsedData, 10, 25)
+
+
+val WSSSE = clusters.computeCost(parsedData)
+
+//movie id ,cluster number
+val prediction = data.map{ line =>val parts = line.split(' ')
+					(parts(0),clusters.predict(Vectors.dense(parts.tail.map(_.toDouble))))}
+
+val movieData = sc.textFile("Homework3/movies.dat")
+val movieFormattedData = movieData.map(line => line.split("::")).map (line => (line(0),(line(1),line(2))))
+
+val joinMovieprediction = prediction.join(movieFormattedData)
+
+val shuffledData= joinMovieprediction.map(line=>(line._2._1,(line._1,line._2._2))).groupByKey()
+
+val listData = shuffledData.map(line =>(line._1,line._2.toList.take(5))).sortBy(_._1)
+
+listData.collect.foreach(line=>println("Cluster : "+ line._1+ "\n" +line._2.map{case (str1,(str2,str3))=> s"$str1,$str2,$str3"}.mkString("\n")))
+
+//To save the output in a Textfile
+//listData.collect.foreach(line=>println("Cluster : "+ line._1+ "\n" +line._2.map{case (str1(str2,str3))=>s"$str1,$str2,$str3"}.mkString(“\n”))).coalesce(1).saveAsTextFile("DUMP_HW3Q1”)
